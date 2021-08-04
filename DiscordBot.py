@@ -1,5 +1,6 @@
 # -*- coding: Shift-JIS -*-
 
+# Testing
 # インストールした discord.py を読み込む
 import discord
 import re
@@ -26,45 +27,123 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    if '/r' in message.content:
-        patternA = '/r (\d+)d(\d+)'
-        patternB = '/r (repeat)\((\d+)d(\d+)\,(\d+)\)'
+	# メッセージがコマンドかどうかを判定
+    if not(message.content[0] == '/' or message.content[0] == '／'):
+        return
 
-        if re.match(patternA,message.content):
-            diceNumber = replaceNumber(message.content)
-            reply = f'{message.author.mention} : {message.content}= ' + oneDice(diceNumber)
-        elif re.match(patternB,message.content):
-            diceNumber=replaceNumber(message.content)
-            reply = f'{message.author.mention} : {message.content}= '
-            for num in range(diceNumber[2] - 1):
-                reply = reply+oneDice(diceNumber)
-                if num != diceNumber[2]:
+	#コメントアウトとコマンドの仕分け
+    commentPosition=re.search(r'((//)|(／／)).*(\n)?',message.content)
+
+    #print(commentPosition)
+    commandString=[]
+    commentString=[]
+
+    if commentPosition != None:
+        commandString = message.content[:commentPosition.start()]
+        if '\n' in commentPosition.group():
+            commentString = message.content[commentPosition.start():commentPosition.end() -1]
+            commandString = commandString + message.content[commentPosition.end() -1:]
+        else:
+            commentString = message.content[commentPosition.start():commentPosition.end()]
+		#コメントの整形
+        commentString = commentString.replace('／', '/')
+    else:
+        commandString = message.content
+
+    print(commandString)
+    print(commentString)
+
+    commandList = makeCommandList(commandString)
+
+
+	#コマンドの判定
+    
+    reply=''
+
+	#ダイスロール
+    if commandList[0] == '/r':
+		#構文チェック
+
+		#処理(暫定的に前バージョンの流用)(アルゴリズムを考える必要あり)
+        if '-r' in commandList:
+            for num in range(commandList[5]):
+                reply = reply+oneDice([commandList[2], commandList[4]])
+                if num != commandList[5]:
                     reply = reply + ', '
         else:
-            reply = f'{message.author.mention} : {message.content} is error'
-        await message.channel.send(reply)
+            reply = oneDice([commandList[1], commandList[3]])
 
-    if '/PCM' in message.content:
-        patternA = '/PCM_auto'
-        patternB = '/PCM_B.*'
-        
-        if re.match(patternA,message.content):
+        reply = f'{message.content}: ' + reply + commentString
+
+	#キャラクタークリエイト
+    elif commandList[0] == '/m':
+		#構文チェック
+
+		#処理(暫定的に前バージョンの流用)(アルゴリズムを考える必要あり)
+        if '-a' in commandList:
             ablilityNumList = CoCDiceRole()
-        elif re.match(patternB,message.content):
-            ablilityNumList = CoCCompileText(message.content)
+        else:
+            ablilityNumList = CoCCompileText(commandList)
 
         PCSheet = CoCCreatePCSheet(ablilityNumList)
+        reply = commentString + "\n" + PCSheet
 
-        reply = f'{message.author.mention}'+ "\n" + PCSheet
-        await message.channel.send(reply)
+	#ねこ
+    elif commandList[0] == '/neko?':
+        reply = "ねこじゃないにゃ！"
 
-    if '/neko?' in message.content:
-        reply = f'{message.author.mention}'+ "ねこじゃないにゃ！"
-        await message.channel.send(reply)
+	#ねこ
+    elif commandList[0] == '/neko?':
+        reply = "にゃ？"
 
-    elif '/neko' in message.content:
-        reply = f'{message.author.mention}'+ "にゃ？"
-        await message.channel.send(reply)
+    #テスト用コマンド
+    elif commandList[0] == '/test':
+        print("test")
+
+	#エラー
+    else:
+        reply = "Error: Command not found"
+
+	#ディスコードに送信
+    await message.channel.send(f'{message.author.mention} ' + reply)
+
+def is_num(s):
+    try:
+        float(s)
+    except ValueError:
+        return False
+    else:
+        return True
+
+#文字列のコマンドをリストに分割
+def makeCommandList(commandString):
+		##冗長性を無くす
+	#全角文字を半角文字に
+    commandString = commandString.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
+	#すべて小文字に
+    commandString = commandString.lower()
+    #空白の調整
+    commandString = ' '.join(commandString.split())
+    
+
+	#語句ごとにリスト化
+	#分ける場所に空白を挿入
+    for i in list(range(len(commandString)-1, 0, -1)):
+        if re.match(r'([0-9][a-z])|([0-9][\!\=\<\>\-\+])|([a-z][0-9])|([a-z][\!\=\<\>\-\+])|([\!\=\<\>\-\+][0-9])|([\!\=\<\>\+][a-z])', commandString[i - 1]+commandString[i]) != None:
+            commandString = commandString[:i] + ' ' + commandString[i:]
+
+    commandList=commandString.split()
+
+    print(commandList)
+
+	#数字をint/float型へ変換
+    for i in range(len(commandList)):
+        if is_num(commandList[i]):
+            commandList[i] = float(commandList[i])
+            if commandList[i].is_integer():
+                commandList[i] = int(commandList[i])
+    
+    return commandList
 
 def oneDice(diceNumber):
     reply = '('
@@ -77,13 +156,6 @@ def oneDice(diceNumber):
         diceAll += diceResult
     reply = reply + ') = ' + str(diceAll)
     return reply
-
-def replaceNumber(message):
-    messageString = str(message)
-    messageString = messageString.replace('/r','').replace('repeat(','').replace(')','')
-    messageString = messageString.replace('d',',')
-    numList = [int(x.strip()) for x in messageString.split(',')]
-    return numList
 
 def CoCDiceRole():
 	#[STR,CON,POW,DEX,APP,SIZ,INT,EDU,年収・財産(ダイス目)]
@@ -119,18 +191,14 @@ def CoCDiceRole():
 
 	return abilityNumList
 
-def CoCCompileText(text):
+def CoCCompileText(commandList):
 	abilityNumList=[]
 
-	result = re.findall(r"\d+", text)
-
-	for i in range(8):
-		abilityNumList.append(int(result[i]))
-
-	abilityNumList.append(int(result[8]))
+	for i in commandList[1:10]:
+		abilityNumList.append(int(re.sub(r"\D", "", i)))
 
 	abilityNumList = CoCDamageBonusCal(abilityNumList)
-
+	
 	print(abilityNumList)
 
 	return abilityNumList
@@ -174,7 +242,6 @@ def CoCCreatePCSheet(ablilityNumList):
 	print(PCSheet)
 
 	return PCSheet
-
 
 # Botの起動とDiscordサーバーへの接続
 client.run(TOKEN)
