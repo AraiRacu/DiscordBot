@@ -88,6 +88,15 @@ async def on_message(message):
         PCSheet = CoCCreatePCSheet(ablilityNumList)
         reply = commentString + "\n" + PCSheet
 
+	#Botの発言の削除
+    elif commandList[0] == '/delete':
+		#構文チェック
+
+		#処理(暫定的に前バージョンの流用)(アルゴリズムを考える必要あり)
+        targetMessage = await message.channel.fetch_message(123)
+        await targetMessage.delete()#メッセージの削除
+        return
+
 	#ねこ
     elif commandList[0] == '/neko?':
         reply = "ねこじゃないにゃ！"
