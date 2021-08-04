@@ -35,8 +35,8 @@ async def on_message(message):
     commentPosition=re.search(r'((//)|(Å^Å^)).*(\n)?',message.content)
 
     #print(commentPosition)
-    commandString=[]
-    commentString=[]
+    commandString=''
+    commentString=''
 
     if commentPosition != None:
         commandString = message.content[:commentPosition.start()]
