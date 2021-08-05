@@ -2,7 +2,6 @@
 
 # Testing
 # インストールした discord.py を読み込む
-from asyncio.windows_events import NULL
 import discord
 import re
 import random
