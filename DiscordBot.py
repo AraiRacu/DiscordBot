@@ -1,85 +1,165 @@
-# -*- coding: Shift-JIS -*-
+# -*- coding: utf-8 -*-
 
 # Testing
-# ƒCƒ“ƒXƒg[ƒ‹‚µ‚½ discord.py ‚ğ“Ç‚İ‚Ş
+# ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã—ãŸ discord.py ã‚’èª­ã¿è¾¼ã‚€
+from asyncio.windows_events import NULL
 import discord
 import re
 import random
 
-# ©•ª‚ÌBot‚ÌƒAƒNƒZƒXƒg[ƒNƒ“‚É’u‚«Š·‚¦‚Ä‚­‚¾‚³‚¢
+# è‡ªåˆ†ã®Botã®ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã«ç½®ãæ›ãˆã¦ãã ã•ã„
 f = open('TokenID.txt', 'r')
 TOKEN = f.read()
 f.close()
 
-# Ú‘±‚É•K—v‚ÈƒIƒuƒWƒFƒNƒg‚ğ¶¬
+# æ¥ç¶šã«å¿…è¦ãªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
 client = discord.Client()
 
-# ‹N“®‚É“®ì‚·‚éˆ—
+# èµ·å‹•æ™‚ã«å‹•ä½œã™ã‚‹å‡¦ç†
+
+
 @client.event
 async def on_ready():
-    # ‹N“®‚µ‚½‚çƒ^[ƒ~ƒiƒ‹‚ÉƒƒOƒCƒ“’Ê’m‚ª•\¦‚³‚ê‚é
-    print('ƒƒOƒCƒ“‚µ‚Ü‚µ‚½')
+    # èµ·å‹•ã—ãŸã‚‰ã‚¿ãƒ¼ãƒŸãƒŠãƒ«ã«ãƒ­ã‚°ã‚¤ãƒ³é€šçŸ¥ãŒè¡¨ç¤ºã•ã‚Œã‚‹
+    print('ãƒ­ã‚°ã‚¤ãƒ³ã—ã¾ã—ãŸ')
 
-# ƒƒbƒZ[ƒWóM‚É“®ì‚·‚éˆ—
+# ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å—ä¿¡æ™‚ã«å‹•ä½œã™ã‚‹å‡¦ç†
+
+
 @client.event
 async def on_message(message):
-    # ƒƒbƒZ[ƒW‘—MÒ‚ªBot‚¾‚Á‚½ê‡‚Í–³‹‚·‚é
+    # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡è€…ãŒBotã ã£ãŸå ´åˆã¯ç„¡è¦–ã™ã‚‹
     if message.author.bot:
         return
 
-	# ƒƒbƒZ[ƒW‚ªƒRƒ}ƒ“ƒh‚©‚Ç‚¤‚©‚ğ”»’è
-    if not(message.content[0] == '/' or message.content[0] == '^'):
+        # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚³ãƒãƒ³ãƒ‰ã‹ã©ã†ã‹ã‚’åˆ¤å®š
+    if not(message.content[0] == '/' or message.content[0] == 'ï¼'):
         return
 
-	#ƒRƒƒ“ƒgƒAƒEƒg‚ÆƒRƒ}ƒ“ƒh‚Ìd•ª‚¯
-    commentPosition=re.search(r'((//)|(^^)).*(\n)?',message.content)
+        # ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆã¨ã‚³ãƒãƒ³ãƒ‰ã®ä»•åˆ†ã‘
+    commentPosition = re.search(r'((//)|(ï¼ï¼)).*(\n)?', message.content)
 
-    #print(commentPosition)
-    commandString=''
-    commentString=''
+    # print(commentPosition)
+    commandString = ''
+    commentString = ''
 
     if commentPosition != None:
         commandString = message.content[:commentPosition.start()]
         if '\n' in commentPosition.group():
-            commentString = message.content[commentPosition.start():commentPosition.end() -1]
-            commandString = commandString + message.content[commentPosition.end() -1:]
+            commentString = message.content[commentPosition.start():commentPosition.end() - 1]
+            commandString = commandString + message.content[commentPosition.end() - 1:]
         else:
             commentString = message.content[commentPosition.start():commentPosition.end()]
-		#ƒRƒƒ“ƒg‚Ì®Œ`
-        commentString = commentString.replace('^', '/')
+            # ã‚³ãƒ¡ãƒ³ãƒˆã®æ•´å½¢
+        commentString = commentString.replace('ï¼', '/')
     else:
         commandString = message.content
 
-    print(commandString)
-    print(commentString)
+    #print(commandString)
+    #print(commentString)
 
     commandList = makeCommandList(commandString)
 
+    # ã‚³ãƒãƒ³ãƒ‰ã®åˆ¤å®š
 
-	#ƒRƒ}ƒ“ƒh‚Ì”»’è
-    
-    reply=''
+    reply = ''
 
-	#ƒ_ƒCƒXƒ[ƒ‹
+    # ãƒ€ã‚¤ã‚¹ãƒ­ãƒ¼ãƒ«
     if commandList[0] == '/r':
-		#\•¶ƒ`ƒFƒbƒN
+        # æ§‹æ–‡ãƒã‚§ãƒƒã‚¯
+        if re.match(r'/r (-r )?((\d+ d \d+)|(ccb))( (\+|\-) \d+)?( (>=)|(>)|(<=)|(<)|(==)|(!=) \d+)?( \d+)?', ' '.join([str(n) for n in commandList])) == None:
+            errorMessage = "/r Command Syntax Error"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
 
-		#ˆ—(b’è“I‚É‘Oƒo[ƒWƒ‡ƒ“‚Ì—¬—p)(ƒAƒ‹ƒSƒŠƒYƒ€‚ğl‚¦‚é•K—v‚ ‚è)
-        if '-r' in commandList:
-            for num in range(commandList[5]):
-                reply = reply+oneDice([commandList[2], commandList[4]])
-                if num != commandList[5]:
-                    reply = reply + ', '
+        repeatTimes = 1
+        if commandList[1] == '-r' and type(commandList[-1]) == int and type(commandList[-2]) == int:
+            diceList = commandList[2:-1]
+            repeatTimes = commandList[-1]
+        elif commandList[1] == '-r':
+            errorMessage = "/r Command Syntax Error"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
         else:
-            reply = oneDice([commandList[1], commandList[3]])
+            diceList = commandList[1:-1] + [commandList[-1]]
 
-        reply = f'{message.content}: ' + reply + commentString
+        ccbFlag = False
+        if diceList[0] == 'ccb':
+            diceList.pop(0)
+            diceList = [1, 'd', 100] + diceList
+            ccbFlag = True
 
-	#ƒLƒƒƒ‰ƒNƒ^[ƒNƒŠƒGƒCƒg
+        checkFixedNum = [i for i, x in enumerate(diceList) if x == '+' or x == '-']
+        if checkFixedNum == []:
+            checkFixedNum = -1
+        else:
+            checkFixedNum = checkFixedNum[0]
+        checkJudgeStatus = [i for i, x in enumerate(diceList) if x == '>' or x == '>=' or x == '<' or x == '<=' or x == '==' or x == '!=']
+        if checkJudgeStatus == []:
+            checkJudgeStatus = -1
+        else:
+            checkJudgeStatus = checkJudgeStatus[0]
+
+        # å‡¦ç†
+        for num in range(repeatTimes):
+            #é€šå¸¸ãƒ€ã‚¤ã‚¹
+            resultDiceList = [random.randint(1, diceList[2]) for i in range(diceList[0])]
+            diceSum = sum(resultDiceList)
+            #å›ºå®šå€¤è¶³ã—å¼•ã
+            if checkFixedNum != -1:
+                if diceList[checkFixedNum] == '-':
+                    diceSum = diceSum - diceList[checkFixedNum + 1]
+                elif diceList[checkFixedNum] == '+':
+                    diceSum = diceSum + diceList[checkFixedNum + 1]
+            #æˆåŠŸåˆ¤å®š
+            if checkJudgeStatus != -1:
+                if diceList[checkJudgeStatus] == '>':
+                    resultStatus = str(diceSum > diceList[checkJudgeStatus + 1])
+                elif diceList[checkJudgeStatus] == '>=':
+                    resultStatus = str(diceSum >= diceList[checkJudgeStatus + 1])
+                elif diceList[checkJudgeStatus] == '<':
+                    resultStatus = str(diceSum < diceList[checkJudgeStatus + 1])
+                    if ccbFlag and diceSum < diceList[checkJudgeStatus + 1] / 5:
+                        resultStatus = 'Special'
+                elif diceList[checkJudgeStatus] == '<=':
+                    resultStatus = str(diceSum <= diceList[checkJudgeStatus + 1])
+                    if ccbFlag and diceSum < diceList[checkJudgeStatus + 1] / 5:
+                        resultStatus = 'Special'
+                elif diceList[checkJudgeStatus] == '==':
+                    resultStatus = str(diceSum == diceList[checkJudgeStatus + 1])
+                elif diceList[checkJudgeStatus] == '!=':
+                    resultStatus = str(diceSum != diceList[checkJudgeStatus + 1])
+                if ccbFlag and diceSum > 96:
+                    resultStatus = resultStatus + '/Fumble!'
+                elif ccbFlag and diceSum <= 5:
+                    resultStatus = resultStatus + '/Critical!'
+            #æ–‡å­—åˆ—æ•´å½¢
+            reply = reply + '(' + str(resultDiceList[0])
+            for i in range(len(resultDiceList)-1):
+                reply = reply + '+' + str(resultDiceList[i + 1])
+            reply = reply + ')'
+
+            if checkFixedNum != -1:
+                reply = reply + diceList[3] + str(diceList[4])
+
+            reply = reply + ' = ' + str(diceSum)
+
+            if checkJudgeStatus != -1:
+                reply = reply + " -> " + resultStatus
+
+            reply = reply + ', '
+
+        reply = commandString + ' : ' + reply + commentString
+
+        # ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚¯ãƒªã‚¨ã‚¤ãƒˆ
     elif commandList[0] == '/m':
-		#\•¶ƒ`ƒFƒbƒN
+        # æ§‹æ–‡ãƒã‚§ãƒƒã‚¯
+        if commandList[1] == '-a' and len(commandList) != 2:
+            errorMessage = "/m Command Syntax Error"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
 
-		#ˆ—(b’è“I‚É‘Oƒo[ƒWƒ‡ƒ“‚Ì—¬—p)(ƒAƒ‹ƒSƒŠƒYƒ€‚ğl‚¦‚é•K—v‚ ‚è)
+        # å‡¦ç†(æš«å®šçš„ã«å‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®æµç”¨)(ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è€ƒãˆã‚‹å¿…è¦ã‚ã‚Š)
         if '-a' in commandList:
             ablilityNumList = CoCDiceRole()
         else:
@@ -88,33 +168,40 @@ async def on_message(message):
         PCSheet = CoCCreatePCSheet(ablilityNumList)
         reply = commentString + "\n" + PCSheet
 
-	#Bot‚Ì”­Œ¾‚Ìíœ
-    elif commandList[0] == '/delete':
-		#\•¶ƒ`ƒFƒbƒN
+        # Botã®ç™ºè¨€ã®å‰Šé™¤
+    elif commandList[0] == '/d':
+        # æ§‹æ–‡ãƒã‚§ãƒƒã‚¯
+        if commandList[1] != 4593:
+            errorMessage = "/d Wrong Pass"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
 
-		#ˆ—(b’è“I‚É‘Oƒo[ƒWƒ‡ƒ“‚Ì—¬—p)(ƒAƒ‹ƒSƒŠƒYƒ€‚ğl‚¦‚é•K—v‚ ‚è)
-        targetMessage = await message.channel.fetch_message(123)
-        await targetMessage.delete()#ƒƒbƒZ[ƒW‚Ìíœ
+        # å‡¦ç†(æš«å®šçš„ã«å‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®æµç”¨)(ã‚¢ãƒ«ã‚´ãƒªã‚ºãƒ ã‚’è€ƒãˆã‚‹å¿…è¦ã‚ã‚Š)
+        targetMessage = await message.channel.fetch_message(commandList[2])
+        await targetMessage.delete()  # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®å‰Šé™¤
         return
 
-	#‚Ë‚±
+        # ã­ã“
     elif commandList[0] == '/neko?':
-        reply = "‚Ë‚±‚¶‚á‚È‚¢‚É‚áI"
+        reply = "ã­ã“ã˜ã‚ƒãªã„ã«ã‚ƒï¼"
 
-	#‚Ë‚±
+        # ã­ã“
     elif commandList[0] == '/neko?':
-        reply = "‚É‚áH"
+        reply = "ã«ã‚ƒï¼Ÿ"
 
-    #ƒeƒXƒg—pƒRƒ}ƒ“ƒh
+    # ãƒ†ã‚¹ãƒˆç”¨ã‚³ãƒãƒ³ãƒ‰
     elif commandList[0] == '/test':
         print("test")
 
-	#ƒGƒ‰[
+        # ã‚¨ãƒ©ãƒ¼
     else:
-        reply = "Error: Command not found"
+        errorMessage = "Command not found"
+        await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+        return
 
-	#ƒfƒBƒXƒR[ƒh‚É‘—M
+        # ãƒ‡ã‚£ã‚¹ã‚³ãƒ¼ãƒ‰ã«é€ä¿¡
     await message.channel.send(f'{message.author.mention} ' + reply)
+
 
 def is_num(s):
     try:
@@ -124,133 +211,121 @@ def is_num(s):
     else:
         return True
 
-#•¶š—ñ‚ÌƒRƒ}ƒ“ƒh‚ğƒŠƒXƒg‚É•ªŠ„
+# æ–‡å­—åˆ—ã®ã‚³ãƒãƒ³ãƒ‰ã‚’ãƒªã‚¹ãƒˆã«åˆ†å‰²
 def makeCommandList(commandString):
-		##ç’·«‚ğ–³‚­‚·
-	#‘SŠp•¶š‚ğ”¼Šp•¶š‚É
-    commandString = commandString.translate(str.maketrans({chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
-	#‚·‚×‚Ä¬•¶š‚É
+    # å†—é•·æ€§ã‚’ç„¡ãã™
+    # å…¨è§’æ–‡å­—ã‚’åŠè§’æ–‡å­—ã«
+    commandString = commandString.translate(str.maketrans(
+        {chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
+    # ã™ã¹ã¦å°æ–‡å­—ã«
     commandString = commandString.lower()
-    #‹ó”’‚Ì’²®
+    # ç©ºç™½ã®èª¿æ•´
     commandString = ' '.join(commandString.split())
-    
 
-	#Œê‹å‚²‚Æ‚ÉƒŠƒXƒg‰»
-	#•ª‚¯‚éêŠ‚É‹ó”’‚ğ‘}“ü
+    # èªå¥ã”ã¨ã«ãƒªã‚¹ãƒˆåŒ–
+    # åˆ†ã‘ã‚‹å ´æ‰€ã«ç©ºç™½ã‚’æŒ¿å…¥
     for i in list(range(len(commandString)-1, 0, -1)):
         if re.match(r'([0-9][a-z])|([0-9][\!\=\<\>\-\+])|([a-z][0-9])|([a-z][\!\=\<\>\-\+])|([\!\=\<\>\-\+][0-9])|([\!\=\<\>\+][a-z])', commandString[i - 1]+commandString[i]) != None:
             commandString = commandString[:i] + ' ' + commandString[i:]
 
-    commandList=commandString.split()
+    commandList = commandString.split()
 
-    print(commandList)
-
-	#”š‚ğint/floatŒ^‚Ö•ÏŠ·
+    # æ•°å­—ã‚’int/floatå‹ã¸å¤‰æ›
     for i in range(len(commandList)):
         if is_num(commandList[i]):
-            commandList[i] = float(commandList[i])
-            if commandList[i].is_integer():
+            if '.' in commandList[i]:
+                commandList[i] = float(commandList[i])
+            else:
                 commandList[i] = int(commandList[i])
-    
+
     return commandList
 
-def oneDice(diceNumber):
-    reply = '('
-    diceAll = 0
-    for num in range(diceNumber[0]):
-        diceResult = random.randrange(1, diceNumber[1] + 1)
-        reply = reply + str(diceResult)
-        if num != diceNumber[0] - 1:
-            reply = reply + '+'
-        diceAll += diceResult
-    reply = reply + ') = ' + str(diceAll)
-    return reply
-
 def CoCDiceRole():
-	#[STR,CON,POW,DEX,APP,SIZ,INT,EDU,”NûEàY(ƒ_ƒCƒX–Ú)]
-	abilityNumList=[]
+    # [STR,CON,POW,DEX,APP,SIZ,INT,EDU,å¹´åãƒ»è²¡ç”£(ãƒ€ã‚¤ã‚¹ç›®)]
+    abilityNumList = []
 
-	incomeList=[0,0,150,200,250,300,350,400,450,500,600,700,800,900,1000,2000,3000,5000]
+    incomeList = [0, 0, 150, 200, 250, 300, 350, 400, 450,
+                  500, 600, 700, 800, 900, 1000, 2000, 3000, 5000]
 
-	for i in range(5):
-		abillityNum = 0
-		for num in range(3):
-		    abillityNum += random.randrange(1, 6 + 1)
-		abilityNumList.append(abillityNum)
+    for i in range(5):
+        abillityNum = 0
+        for num in range(3):
+            abillityNum += random.randrange(1, 6 + 1)
+        abilityNumList.append(abillityNum)
 
-	for i in range(2):
-		abillityNum = 0
-		for num in range(2):
-		    abillityNum += random.randrange(1, 6 + 1)
-		abilityNumList.append(abillityNum + 6)
-	
-	abillityNum = 0
-	for num in range(3):
-		abillityNum += random.randrange(1, 6 + 1)
-	abilityNumList.append(abillityNum + 3)
+    for i in range(2):
+        abillityNum = 0
+        for num in range(2):
+            abillityNum += random.randrange(1, 6 + 1)
+        abilityNumList.append(abillityNum + 6)
 
-	abillityNum = 0
-	for num in range(3):
-		abillityNum += random.randrange(1, 6 + 1)
-	abilityNumList.append(incomeList[abillityNum - 1])
-	
-	abilityNumList = CoCDamageBonusCal(abilityNumList)
+    abillityNum = 0
+    for num in range(3):
+        abillityNum += random.randrange(1, 6 + 1)
+    abilityNumList.append(abillityNum + 3)
 
-	print(abilityNumList)
+    abillityNum = 0
+    for num in range(3):
+        abillityNum += random.randrange(1, 6 + 1)
+    abilityNumList.append(incomeList[abillityNum - 1])
 
-	return abilityNumList
+    abilityNumList = CoCDamageBonusCal(abilityNumList)
+
+    return abilityNumList
+
 
 def CoCCompileText(commandList):
-	abilityNumList=[]
+    abilityNumList = []
 
-	for i in commandList[1:10]:
-		abilityNumList.append(int(re.sub(r"\D", "", i)))
+    for i in commandList[1:10]:
+        abilityNumList.append(int(re.sub(r"\D", "", i)))
 
-	abilityNumList = CoCDamageBonusCal(abilityNumList)
-	
-	print(abilityNumList)
+    abilityNumList = CoCDamageBonusCal(abilityNumList)
 
-	return abilityNumList
+    return abilityNumList
+
 
 def CoCDamageBonusCal(abilityNumList):
-	checkNum = abilityNumList[0] + abilityNumList[5]
-	if 2 <= checkNum and checkNum <= 12:
-		abilityNumList.append("-1D6")
-	elif 13 <= checkNum and checkNum <= 16:
-		abilityNumList.append("-1D4")
-	elif 17 <= checkNum and checkNum <= 24:
-		abilityNumList.append("0")
-	elif 25 <= checkNum and checkNum <= 32:
-		abilityNumList.append("+1D4")
-	elif 33 <= checkNum and checkNum <= 40:
-		abilityNumList.append("+1D6")
-	elif 41 <= checkNum and checkNum <= 56:
-		abilityNumList.append("+2D6")
-	elif 57 <= checkNum and checkNum <= 72:
-		abilityNumList.append("+3D6")
-	elif 73 <= checkNum and checkNum <= 88:
-		abilityNumList.append("+4D6")
-	elif 89 <= checkNum and checkNum <= 104:
-		abilityNumList.append("+5D6")
-	else:
-		abilityNumList.append("•\QÆ")
+    checkNum = abilityNumList[0] + abilityNumList[5]
+    if 2 <= checkNum and checkNum <= 12:
+        abilityNumList.append("-1D6")
+    elif 13 <= checkNum and checkNum <= 16:
+        abilityNumList.append("-1D4")
+    elif 17 <= checkNum and checkNum <= 24:
+        abilityNumList.append("0")
+    elif 25 <= checkNum and checkNum <= 32:
+        abilityNumList.append("+1D4")
+    elif 33 <= checkNum and checkNum <= 40:
+        abilityNumList.append("+1D6")
+    elif 41 <= checkNum and checkNum <= 56:
+        abilityNumList.append("+2D6")
+    elif 57 <= checkNum and checkNum <= 72:
+        abilityNumList.append("+3D6")
+    elif 73 <= checkNum and checkNum <= 88:
+        abilityNumList.append("+4D6")
+    elif 89 <= checkNum and checkNum <= 104:
+        abilityNumList.append("+5D6")
+    else:
+        abilityNumList.append("è¡¨å‚ç…§")
 
-	return abilityNumList
+    return abilityNumList
+
 
 def CoCCreatePCSheet(ablilityNumList):
-	PCSheet="–¼‘O“ü—Í—“(‚Ó‚è‰¼–¼)«•Ê:@E‹Æ:@”N—î:@PL:\nSTR:"\
-	   + str(ablilityNumList[0]) + "  DEX:" +  str(ablilityNumList[3]) + "  INT:" +  str(ablilityNumList[6]) + "  ƒAƒCƒfƒA:" +  str(ablilityNumList[6]*5) + "\n"\
-	   + "CON:" + str(ablilityNumList[1]) + "  APP:" +  str(ablilityNumList[4]) + "  POW:" +  str(ablilityNumList[2]) + "  K‰^:" +  str(ablilityNumList[2]*5) + "\n"\
-	   + "SIZ:" + str(ablilityNumList[5]) + "  SAN:" +  str(ablilityNumList[2]*5) + "  EDU:" +  str(ablilityNumList[7]) + "  ’m¯:" +  str(ablilityNumList[7]*5) + "\n"\
-	   + "HP:" + str(-(-(ablilityNumList[1] + ablilityNumList[5]) // 2)) + "  MP:" +  str(ablilityNumList[2]) + "  ‰ñ”ğ:" +  str(ablilityNumList[3] * 2) + "  ÀŞÒ°¼ŞÎŞ°Å½:" + ablilityNumList[9] + "\n"\
-	   + "\\\\\\\\\\\\\\\\\\\\\\\\\\\n[‹Z”\](E‹Æ‹Z”\“_:" + str(ablilityNumList[7] * 20) + "  ŒÂl‹Z”\“_:" + str(ablilityNumList[6] * 10) + ")" + "\n"\
-	   + "[E‹Æ‹Z”\]\n‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)\n‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)\n"\
-	   + "[E‹Æ‘I‘ğ‹Z”\]\n‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)\n[ŒÂl‹Z”\]\n‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)  ‹Z”\–¼:“(+)\n\\\\\\\\\\\\\\\\\\\\\\\\\\\n"\
-	   + "[‚¿•¨]\nE•Ší\n[\\\\\\\\‚±‚±‚É‹L“ü\\\\\\\\]\nE–h‹ï\n[\\\\\\\\‚±‚±‚É‹L“ü\\\\\\\\]\nEŠ•i\n[\\\\\\\\‚±‚±‚É‹L“ü\\\\\\\\]\n\n"\
-	   + "“Á‹L:\n\n[ƒvƒƒtƒB[ƒ‹]\n\n”Nû:" + str(ablilityNumList[8]) + "–œAàY:" + str(ablilityNumList[8] * 5) + "–œ"
-	print(PCSheet)
+    PCSheet = "åå‰å…¥åŠ›æ¬„(ãµã‚Šä»®å)æ€§åˆ¥:ã€€è·æ¥­:ã€€å¹´é½¢:ã€€PL:\nSTR:"\
+        + str(ablilityNumList[0]) + "  DEX:" + str(ablilityNumList[3]) + "  INT:" + str(ablilityNumList[6]) + "  ã‚¢ã‚¤ãƒ‡ã‚¢:" + str(ablilityNumList[6]*5) + "\n"\
+        + "CON:" + str(ablilityNumList[1]) + "  APP:" + str(ablilityNumList[4]) + "  POW:" + str(ablilityNumList[2]) + "  å¹¸é‹:" + str(ablilityNumList[2]*5) + "\n"\
+        + "SIZ:" + str(ablilityNumList[5]) + "  SAN:" + str(ablilityNumList[2]*5) + "  EDU:" + str(ablilityNumList[7]) + "  çŸ¥è­˜:" + str(ablilityNumList[7]*5) + "\n"\
+        + "HP:" + str(-(-(ablilityNumList[1] + ablilityNumList[5]) // 2)) + "  MP:" + str(ablilityNumList[2]) + "  å›é¿:" + str(ablilityNumList[3] * 2) + "  ï¾€ï¾ï¾’ï½°ï½¼ï¾ï¾ï¾ï½°ï¾…ï½½:" + ablilityNumList[9] + "\n"\
+        + "â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•\n[æŠ€èƒ½](è·æ¥­æŠ€èƒ½ç‚¹:" + str(ablilityNumList[7] * 20) + "  å€‹äººæŠ€èƒ½ç‚¹:" + str(ablilityNumList[6] * 10) + ")" + "\n"\
+        + "[è·æ¥­æŠ€èƒ½]\næŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)\næŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)\n"\
+        + "[è·æ¥­é¸æŠæŠ€èƒ½]\næŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)\n[å€‹äººæŠ€èƒ½]\næŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)  æŠ€èƒ½å:ï¼…(+)\nâ€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•â€•\n"\
+        + "[æŒã¡ç‰©]\nãƒ»æ­¦å™¨\n[â€•â€•â€•â€•â€•â€•â€•â€•ã“ã“ã«è¨˜å…¥â€•â€•â€•â€•â€•â€•â€•â€•]\nãƒ»é˜²å…·\n[â€•â€•â€•â€•â€•â€•â€•â€•ã“ã“ã«è¨˜å…¥â€•â€•â€•â€•â€•â€•â€•â€•]\nãƒ»æ‰€æŒå“\n[â€•â€•â€•â€•â€•â€•â€•â€•ã“ã“ã«è¨˜å…¥â€•â€•â€•â€•â€•â€•â€•â€•]\n\n"\
+        + "ç‰¹è¨˜:\n\n[ãƒ—ãƒ­ãƒ•ã‚£ãƒ¼ãƒ«]\n\nå¹´å:" + \
+        str(ablilityNumList[8]) + "ä¸‡ã€è²¡ç”£:" + str(ablilityNumList[8] * 5) + "ä¸‡"
 
-	return PCSheet
+    return PCSheet
 
-# Bot‚Ì‹N“®‚ÆDiscordƒT[ƒo[‚Ö‚ÌÚ‘±
+
+# Botã®èµ·å‹•ã¨Discordã‚µãƒ¼ãƒãƒ¼ã¸ã®æ¥ç¶š
 client.run(TOKEN)
