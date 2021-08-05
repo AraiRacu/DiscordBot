@@ -39,6 +39,7 @@ async def on_message(message):
         # コメントアウトとコマンドの仕分け
     commentPosition = re.search(r'((//)|(／／)).*(\n)?', message.content)
 
+
     # print(commentPosition)
     commandString = ''
     commentString = ''
