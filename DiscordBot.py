@@ -151,6 +151,42 @@ async def on_message(message):
 
         reply = commandString + ' : ' + reply + commentString
 
+		# 選択
+    elif commandList[0] == '/choice':
+        
+        optionFlag = False
+        selectionNum = 1
+        # 構文チェック
+        if type(commandList[1]) == int:
+            checkList = commandList[2:]
+            selectionNum = commandList[1]
+            optionFlag = True;
+        else:
+            checkList = commandList[1:]
+
+        if not(checkList[0] == '(' and checkList[-1] == ')' and len(checkList) > 0):
+            errorMessage = "/choice Command Syntax Error"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
+        selectionString = ''.join(map(str, checkList[1:-1]))
+        selectionList = selectionString.split(',')
+		# 選択肢リスト化
+        selection = list(filter(lambda x: x != ',' and x != '(' and x != ')', selectionList))
+
+		# 選択
+        if len(selection) < selectionNum:
+            errorMessage = "/choice OverSelection"
+            await message.channel.send(f'{message.author.mention} ' + 'Error: ' + errorMessage)
+            return
+
+        targetChoice = random.sample(selection, selectionNum)
+
+		# 出力ワード形成
+        reply = ' '.join(map(str,commandList)) + ' -> '
+
+        for i in targetChoice:
+            reply = reply + str(i) + ', '
+
         # キャラクタークリエイト
     elif commandList[0] == '/m':
         # 構文チェック
@@ -180,6 +216,10 @@ async def on_message(message):
         targetMessage = await message.channel.fetch_message(commandList[2])
         await targetMessage.delete()  # メッセージの削除
         return
+
+    #立ち絵画像の解像度編集
+    elif commandList[0] == '/p':
+        reply = '/testing'
 
         # ねこ
     elif commandList[0] == '/neko?':
@@ -217,6 +257,8 @@ def makeCommandList(commandString):
     # 全角文字を半角文字に
     commandString = commandString.translate(str.maketrans(
         {chr(0xFF01 + i): chr(0x21 + i) for i in range(94)}))
+
+    commandString = commandString.replace("、", ",")
     # すべて小文字に
     commandString = commandString.lower()
     # 空白の調整
@@ -225,7 +267,7 @@ def makeCommandList(commandString):
     # 語句ごとにリスト化
     # 分ける場所に空白を挿入
     for i in list(range(len(commandString)-1, 0, -1)):
-        if re.match(r'([0-9][a-z])|([0-9][\!\=\<\>\-\+])|([a-z][0-9])|([a-z][\!\=\<\>\-\+])|([\!\=\<\>\-\+][0-9])|([\!\=\<\>\+][a-z])', commandString[i - 1]+commandString[i]) != None:
+        if re.match(r'([0-9][a-z])|([0-9][\!\=\<\>\-\+\,\)\(])|([a-z][0-9])|([a-z][\!\=\<\>\-\+,\)\(])|([\!\=\<\>\-\+,\)\(][0-9])|([\!\=\<\>\+,\)\(][a-z])|([\(\,]([ぁ-ん]|[ァ-ン]|[一-龥]))|(([ぁ-ん]|[ァ-ン]|[一-龥])[\)\,])', commandString[i - 1]+commandString[i]) != None:
             commandString = commandString[:i] + ' ' + commandString[i:]
 
     commandList = commandString.split()
