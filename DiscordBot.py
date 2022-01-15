@@ -319,10 +319,12 @@ def CoCDiceRole():
 
 def CoCCompileText(commandList):
     abilityNumList = []
-
-    for i in commandList[1:10]:
-        abilityNumList.append(int(re.sub(r"\D", "", i)))
-
+    print("test")
+    for i in commandList[1:]:
+        if (n := re.sub(r"\D", "", i)) != '':
+            abilityNumList.append(int(n))
+            if len(abilityNumList) >= 9:
+                break
     abilityNumList = CoCDamageBonusCal(abilityNumList)
 
     return abilityNumList
@@ -355,7 +357,7 @@ def CoCDamageBonusCal(abilityNumList):
 
 
 def CoCCreatePCSheet(ablilityNumList):
-    PCSheet = "名前入力欄(ふり仮名)性別:　職業:　年齢:　PL:\nSTR:"\
+    PCSheet = "名前:　(ふり仮名)性別:　職業:　年齢:　PL:\nSTR:"\
         + str(ablilityNumList[0]) + "  DEX:" + str(ablilityNumList[3]) + "  INT:" + str(ablilityNumList[6]) + "  アイデア:" + str(ablilityNumList[6]*5) + "\n"\
         + "CON:" + str(ablilityNumList[1]) + "  APP:" + str(ablilityNumList[4]) + "  POW:" + str(ablilityNumList[2]) + "  幸運:" + str(ablilityNumList[2]*5) + "\n"\
         + "SIZ:" + str(ablilityNumList[5]) + "  SAN:" + str(ablilityNumList[2]*5) + "  EDU:" + str(ablilityNumList[7]) + "  知識:" + str(ablilityNumList[7]*5) + "\n"\
