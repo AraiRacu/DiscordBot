@@ -2,10 +2,11 @@
 
 # Testing
 # インストールした discord.py を読み込む
-from asyncio.windows_events import NULL
+# from asyncio.windows_events import NULL
 import discord
 import re
 import random
+from PIL import Image
 
 # 自分のBotのアクセストークンに置き換えてください
 f = open('TokenID.txt', 'r')
